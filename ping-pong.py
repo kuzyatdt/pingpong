@@ -1,4 +1,5 @@
 from pygame import *
+
 '''Необходимые классы'''
 #класс-родитель для спрайтов
 class GameSprite(sprite.Sprite):
@@ -39,10 +40,21 @@ class Player(GameSprite):
         self.height *= 0.9
         self.image = transform.scale(image.load(self.player_image), (self.width, int(self.height)))
         
-
+class Button():
+    def __init__(self, button_x, button_y, button_width, button_height,button_color,button_text,button_text_size):
+        self.rect = Rect(button_x,button_y, button_width, button_height)
+        self.button_color = button_color
+        self.button_text = font.SysFont('verdana', button_text_size).render(button_text, True, Black)
+    def fill(self):
+        draw.rect(window,self.button_color,self.rect)
+        window.blit(self.button_text, (self.rect.x + 20, self.rect.y + 20))
+    def collidepoint(self,x,y):
+        return self.rect.collidepoint(x,y)
 
 #игровая сцена:
 back = (200, 255, 255) #цвет фона (background)
+Black = (0,0,0)
+bc = (187,65,47)
 win_width = 900
 win_height = 600
 window = display.set_mode((win_width, win_height))
@@ -50,7 +62,7 @@ window.fill(back)
 
 #флаги, отвечающие за состояние игры
 game = True
-finish = False
+finish = True
 clock = time.Clock()
 FPS = 60
 racket_width = 50
@@ -71,12 +83,22 @@ speed_y = 3
 pl_1 = 0
 pl_2 = 0
 win_score = 3
+click_x = 0
+click_y = 0
+
+str_button_width = 200
+str_button_height = 100
+start_button = Button(win_width / 2 - str_button_width / 2,win_height / 2 - str_button_height / 2,str_button_width,str_button_height,bc, "play", 46)
+
 
 
 while game:
     for e in event.get():
         if e.type == QUIT:
             game = False
+        
+        if e.type == MOUSEBUTTONDOWN:
+            click_x,click_y = e.pos
   
     if finish != True:
         window.fill(back)
@@ -121,7 +143,7 @@ while game:
                 window.blit(lose2, (win_width/2 - 150, win_height/2))
 
             ball.rect.x = win_width/2 - 25
-            ball.rect.x = win_height/2 - 25
+            ball.rect.y = win_height/2 - 25
             finish = True
             game_over = True
 
@@ -130,6 +152,18 @@ while game:
         racket2.reset()
         ball.reset()
 
+
+    else:
+        if start_button.collidepoint(click_x,click_y):
+            pl_1 = 0
+            pl_2 = 0
+            click_x = 0
+            click_y = 0
+            racket1.standart_size(racket_height)
+            racket2.standart_size(racket_height)
+            finish = False
+        else:
+            start_button.fill()
 
     display.update()
     clock.tick(FPS)
