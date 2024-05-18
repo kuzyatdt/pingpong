@@ -52,11 +52,12 @@ class Button():
         return self.rect.collidepoint(x,y)
 
 mixer.init()
-mixer.music.load('jungles.ogg')
+mixer.music.load('background_sound.ogg')
 mixer.music.play
 money = mixer.Sound('money.ogg')
-kick = mixer.Sound('kick.ogg')
-
+kick = mixer.Sound('touch_sound.ogg')
+win_sound = mixer.Sound('win.ogg')
+lose_sound = mixer.Sound('lose.ogg')
 #игровая сцена:
 back = (200, 255, 255) #цвет фона (background)
 Black = (0,0,0)
@@ -80,9 +81,9 @@ racket2 = Player('greenracket.png', win_width - racket_width - 30, win_height/2 
 ball = GameSprite('tenis_ball.png', win_width/2, win_height/2, 4, 50, 50)
 
 font.init()
-font = font.Font(None, 35)
-lose1 = font.render('PLAYER 1 LOSE!', True, (180, 0, 0))
-lose2 = font.render('PLAYER 2 LOSE!', True, (180, 0, 0))
+font1 = font.Font(None, 35)
+lose1 = font1.render('PLAYER 1 LOSE!', True, (180, 0, 0))
+lose2 = font1.render('PLAYER 2 LOSE!', True, (180, 0, 0))
 
 speed_x = 3
 speed_y = 3
@@ -120,6 +121,7 @@ while game:
                 racket1.change_size()
             if sprite.collide_rect(racket2, ball):
                 racket2.change_size()
+            kick.play()
 
         #если мяч достигает границ экрана, меняем направление его движения
         if ball.rect.y > win_height-50 or ball.rect.y < 0:
@@ -138,7 +140,7 @@ while game:
             racket1.standart_size(racket_height)
             racket2.standart_size(racket_height)
 
-        st = font.render(str(pl_1) + " : " + str(pl_2),1,(0,0,0))
+        st = font1.render(str(pl_1) + " : " + str(pl_2),1,(0,0,0))
         window.blit(st, (win_width/2 - 50, win_height - 500))
 
         #если мяч улетел дальше ракетки, выводим условие проигрыша для первого игрока
@@ -147,11 +149,14 @@ while game:
                 window.blit(lose1, (win_width/2 - 150, win_height/2))
             elif pl_2 >= win_score:
                 window.blit(lose2, (win_width/2 - 150, win_height/2))
+            lose_sound.play()
+            
 
             ball.rect.x = win_width/2 - 25
             ball.rect.y = win_height/2 - 25
             finish = True
             game_over = True
+            win_sound.play()
 
 
         racket1.reset()
