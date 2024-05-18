@@ -51,6 +51,12 @@ class Button():
     def collidepoint(self,x,y):
         return self.rect.collidepoint(x,y)
 
+mixer.init()
+mixer.music.load('jungles.ogg')
+mixer.music.play
+money = mixer.Sound('money.ogg')
+kick = mixer.Sound('kick.ogg')
+
 #игровая сцена:
 back = (200, 255, 255) #цвет фона (background)
 Black = (0,0,0)
